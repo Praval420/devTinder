@@ -1,13 +1,13 @@
 const express=require('express')
+
 const app=express();
-
-
-
 const {connection}=require('./config/database');
 const bcrypt = require('bcrypt');
 const cookieParser=require('cookie-parser')  
 const userModel=require('./models/user');
+const {userauth}=require('./middlewares/auth');
 const jwt=require('jsonwebtoken');
+
 
 app.use(express.json());
 app.use(cookieParser());
@@ -51,20 +51,9 @@ catch(err){
 }
 });
 
-app.get("/profile",async (req,res)=>{
+app.get("/profile",userauth,async (req,res)=>{
     try{
-        const cookies=req.cookies;
-        const {token}=cookies;
-        if(!token){
-            throw new Error("Invalid Token");
-        }
-        const decodedMessage=await jwt.verify(token,"Pravale44d3"); //it return the object that was signed before
-        const {_id}=decodedMessage;
-        const users=await userModel.find({_id:_id});
-        if(!users){
-            throw new Error("user no longer availbale || token expired")
-        }
-        res.send(users);
+        res.send(req.person);
     }
     catch(err){
     res.status(400).send("ERROR : "+err.message );
