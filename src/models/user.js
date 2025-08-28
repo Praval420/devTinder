@@ -1,4 +1,5 @@
 const mongoose=require('mongoose');
+const validator=require('validator');  // present in npm validator library documentaion
 const userSchema=new mongoose.Schema({
     firstName:{
         type:String,
@@ -10,7 +11,12 @@ const userSchema=new mongoose.Schema({
     emailId:{
         type:String,
         required:true,
-        unique:true
+        unique:true,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("invalid email address"+ value);
+            }
+        }
     },
     password:{
         type:String
