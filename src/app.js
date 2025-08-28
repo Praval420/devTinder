@@ -5,10 +5,12 @@ const app=express();
 
 const {connection}=require('./config/database');
 const bcrypt = require('bcrypt');
-
+const cookieParser=require('cookie-parser')  
 const userModel=require('./models/user');
+const jwt=require('jsonwebtoken');
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post('/signup',async (req,res)=>{
     const {firstName,lastName,emailId,password}=req.body;
@@ -34,6 +36,9 @@ app.post("/login",async (req,res)=>{
         }
         const isPasswordValid=await bcrypt.compare(password,user.password);
         if(isPasswordValid){
+            const token=await jwt.sign({_id:user._id},"Pravale44d3");
+            console.log(token);
+            res.cookie("token",token);
             res.send("login successfully");
         }
         else{
@@ -41,11 +46,30 @@ app.post("/login",async (req,res)=>{
         }
 
     }
-
 catch(err){
     res.status(400).send("ERROR : "+err.message );
 }
 });
+
+app.get("/profile",async (req,res)=>{
+    try{
+        const cookies=req.cookies;
+        const {token}=cookies;
+        if(!token){
+            throw new Error("Invalid Token");
+        }
+        const decodedMessage=await jwt.verify(token,"Pravale44d3"); //it return the object that was signed before
+        const {_id}=decodedMessage;
+        const users=await userModel.find({_id:_id});
+        if(!users){
+            throw new Error("user no longer availbale || token expired")
+        }
+        res.send(users);
+    }
+    catch(err){
+    res.status(400).send("ERROR : "+err.message );
+}
+    })
 
 app.get("/feed",async (req,res)=>{
     const mail=req.body.emailId;
