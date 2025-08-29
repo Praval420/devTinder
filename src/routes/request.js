@@ -9,6 +9,10 @@ connReq.post('/request/send/:status/:userId', userauth, async (req, res) => {
     const status = req.params.status;
     const toUserId = req.params.userId;
     const fromUserId = req.person._id;
+    const allowedStatus=["ignored","interested"];
+    if(!allowedStatus.includes(status)){
+        throw new Error("Invalid status");
+    }
 
     const isUserIdThere = await userModel.findById(toUserId);
     const isDuplicate=await userConnection.find({

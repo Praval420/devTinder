@@ -13,10 +13,6 @@ profileRouter.get("/profile/view",userauth,async (req,res)=>{
 }
     })
 
-profileRouter.get("/feed",async (req,res)=>{
-    const users=await userModel.find({});
-    res.send(users);
-})
 
 profileRouter.post("/profile/edit", userauth, async (req, res) => {
     if (!isEditAllowed(req)) {

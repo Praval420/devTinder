@@ -4,10 +4,12 @@ const userSchema=new mongoose.Schema({
     fromUserId: {
         type:mongoose.Schema.Types.ObjectId,
         required:true,
+        ref:'User',
     },
     toUserId:{
         type:mongoose.Schema.Types.ObjectId,
         required:true,
+        ref:'User',
 
     },
     status:{
@@ -15,7 +17,7 @@ const userSchema=new mongoose.Schema({
         required:true,
 
         enum:{
-            values:["ignore","accepted","rejected","pending"],
+            values:["ignore","accepted","rejected","interested"],
             message:`{VALUE} is incorrect status type`,
         },
     }
