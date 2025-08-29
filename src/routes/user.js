@@ -53,8 +53,13 @@ catch(err){
 userRoute.get("/feed", userauth, async (req, res) => {
   try {
     const loggedInUser = req.person;
-
-    // Find all connection requests where the logged-in user is involved
+    const page=req.query.page || 1;
+    const limit=req.query.limit || 10;
+    const skips=(page-1)*limit;
+    if(limit>100){
+        limit=100;
+    }
+   
     const connectionRequests = await userConnection.find({
       $or: [
         { fromUserId: loggedInUser._id },
@@ -78,7 +83,7 @@ userRoute.get("/feed", userauth, async (req, res) => {
         { _id: { $nin: Array.from(hideUsersFromFeed) } },
         { _id: { $ne: loggedInUser._id } },
       ],
-    }).select('firstName lastName');
+    }).select('firstName lastName').skip(skips).limit(limit);
 
     res.send(users);
   } catch (err) {
