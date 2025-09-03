@@ -17,7 +17,7 @@ const userSchema=new mongoose.Schema({
         required:true,
 
         enum:{
-            values:["ignore","accepted","rejected","interested"],
+            values:["ignored","accepted","rejected","interested"],
             message:`{VALUE} is incorrect status type`,
         },
     }

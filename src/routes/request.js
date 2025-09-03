@@ -42,6 +42,29 @@ connReq.post('/request/send/:status/:userId', userauth, async (req, res) => {
   }
 });
 
+connReq.post('/request/review/:status/:userId', userauth, async (req, res) => {
+  try {
+    const status = req.params.status;
+    const fromId = req.params.userId;
+
+    const user = await userConnection.findOne({
+      $or: [{ fromUserId: fromId, status: "interested" }, { toUserId: fromId, status: "interested" }]
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User connection not found" });
+    }
+
+    user.status = status;
+    await user.save();
+
+    res.status(200).json({ message: "Status updated successfully", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 
 module.exports=connReq;

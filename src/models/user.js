@@ -26,6 +26,15 @@ const userSchema=new mongoose.Schema({
     },
     gender:{
         type:String
+    },
+    photoURL:{
+        type:String
+    },
+    skills:{
+        type:String
+    }
+    ,about:{
+        type:String
     }
 
 

@@ -10,11 +10,10 @@ try{
     const connectionRequests=await userConnection.find({
         toUserId:loggedInUser._id,
         status:"interested",
-    }).populate('fromUserId','firstName lastName');
+    }).populate('fromUserId','firstName lastName photoURL');
 
     res.json({
-        message:"Data fetched Successfully",
-        data:connectionRequests,
+        data: connectionRequests.map(req => req.fromUserId),
     });
 }
 catch(err){
@@ -31,24 +30,25 @@ try{
     const users=await userConnection.find({
         status:"accepted",
         $or:[{toUserId:loggedInUser._id},{fromUserId:loggedInUser._id}],
-    }).populate('toUserId',"firstName lastName").populate('fromUserId',"firstName lastName");
+    }).populate('toUserId',"firstName lastName emailId age about photoURL").populate('fromUserId',"firstName lastName emailId age about photoURL");
 
 
 const data = users.map((row) => {
-  if (row.toUserId.toString() === loggedInUser._id.toString()) {
-    return row.fromUserId;   
+  if (row.toUserId._id.toString() === loggedInUser._id.toString()) {
+    return row.fromUserId;
   } else {
-    return row.toUserId;    
+    return row.toUserId;
   }
 });
-res.json({data});
+
+res.json({data:data});
 }
 catch(err){
     res.json({
         message:err,
     })
 }
-})
+});
 
 userRoute.get("/feed", userauth, async (req, res) => {
   try {
@@ -71,7 +71,7 @@ userRoute.get("/feed", userauth, async (req, res) => {
     const hideUsersFromFeed = new Set();
     connectionRequests.forEach((req) => {
     
-      if (req.fromUserId.toString() === loggedInUser._id.toString()) {
+      if (req.fromUserId._id.toString() === loggedInUser._id.toString()) {
         hideUsersFromFeed.add(req.toUserId.toString());
       } else {
         hideUsersFromFeed.add(req.fromUserId.toString());
@@ -83,7 +83,7 @@ userRoute.get("/feed", userauth, async (req, res) => {
         { _id: { $nin: Array.from(hideUsersFromFeed) } },
         { _id: { $ne: loggedInUser._id } },
       ],
-    }).select('firstName lastName').skip(skips).limit(limit);
+    }).select('firstName lastName photoURL').skip(skips).limit(limit);
 
     res.send(users);
   } catch (err) {

@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const userModel=require('../models/user');
 const jwt=require('jsonwebtoken');
 const authRouter=express.Router();
+const {userauth}=require('../middlewares/auth')
 authRouter.post('/signup',async (req,res)=>{
     const {firstName,lastName,emailId,password}=req.body;
     const pass1= await bcrypt.hash(password,10);
@@ -13,8 +14,12 @@ authRouter.post('/signup',async (req,res)=>{
         password:pass1,
     };
     const users=new userModel(user);
-    await users.save();
-    res.send("user added successfully");
+    const data=await users.save();
+    const token=await jwt.sign({_id:users._id},"Pravale44d3");
+            console.log(token);
+            res.cookie("token",token);
+    res.json({message:"successful signup",data:data});
+    
 
 })
 
@@ -30,7 +35,7 @@ authRouter.post("/login",async (req,res)=>{
             const token=await jwt.sign({_id:user._id},"Pravale44d3");
             console.log(token);
             res.cookie("token",token);
-            res.send("login successfully");
+            res.send(user);
         }
         else{
             throw new Error("Invalid Credentials");
