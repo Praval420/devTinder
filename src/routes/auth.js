@@ -15,7 +15,7 @@ authRouter.post('/signup',async (req,res)=>{
     };
     const users=new userModel(user);
     const data=await users.save();
-    const token=await jwt.sign({_id:users._id},"Pravale44d3");
+    const token=await jwt.sign({_id:users._id},process.env.JWT_SECRET);
             console.log(token);
             res.cookie("token",token);
     res.json({message:"successful signup",data:data});

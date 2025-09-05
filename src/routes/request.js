@@ -3,6 +3,7 @@ const connReq=express.Router();
 const userConnection=require('../models/connectionRequest');
 const userModel=require('../models/user')
 const { userauth } = require('../middlewares/auth');
+// const sendEmail=require("../validations/sendEmail");
 
 connReq.post('/request/send/:status/:userId', userauth, async (req, res) => {
   try {
@@ -34,6 +35,12 @@ connReq.post('/request/send/:status/:userId', userauth, async (req, res) => {
     });
 
     await user.save();
+    // try{
+    // const emailRes=await sendEmail.run();
+    // console.log(emailRes)
+    // }catch(err){
+    //     res.send("error here");
+    // }
 
     res.status(201).json({ message: "Connection "+ status }); 
 

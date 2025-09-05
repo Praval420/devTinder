@@ -3,7 +3,7 @@ const mongoose=require('mongoose');
 
 async function connection(){
     try{
-       await mongoose.connect('mongodb+srv://sourav12345singhpraval:L9nyBckCJpOZ8nKY@cluster0.fxp0rp4.mongodb.net/devTinder');
+       await mongoose.connect(process.env.DB_CONNECTION_SECRET);
        
 
     }

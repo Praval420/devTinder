@@ -1,5 +1,5 @@
 const express=require('express')
-
+require('dotenv').config();
 const app=express();
 const {connection}=require('./src/config/database');
 const cookieParser=require('cookie-parser')  
