@@ -15,11 +15,14 @@ const authRouter=require('./src/routes/auth');
 const profileRouter=require('./src/routes/profile');
 const connReq=require('./src/routes/request');
 const userRoute=require('./src/routes/user');
+const paymentRouter = require('./src/routes/payment');
+
 
 app.use('/',authRouter);
 app.use('/',profileRouter);
 app.use('/',connReq);
 app.use('/',userRoute);
+app.use('/',paymentRouter);
 
 
 

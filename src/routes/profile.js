@@ -2,7 +2,7 @@ const express=require('express');
 const profileRouter=express.Router();
 const {userauth}=require('../middlewares/auth');
 const userModel=require('../models/user');
-const isEditAllowed=require('../validations/validators');
+const isEditAllowed=require('../utils/validators');
 
 profileRouter.get("/profile/view",userauth,async (req,res)=>{
     try{
