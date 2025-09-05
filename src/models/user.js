@@ -35,6 +35,13 @@ const userSchema=new mongoose.Schema({
     }
     ,about:{
         type:String
+    },
+    isPremiumUser:{
+        type:Boolean,
+        default:false
+    },
+    membershipType:{
+        type:String,
     }
 
 

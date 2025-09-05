@@ -1,0 +1,1 @@
+export const MembershipType={"gold":700,"silver":500};
